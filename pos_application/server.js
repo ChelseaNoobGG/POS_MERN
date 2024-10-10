@@ -28,6 +28,8 @@ app.use("/api/items", require("./routes/itemRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/bills", require("./routes/billsRoute"));
 app.use("/api/types", require("./routes/typeRoutes"));
+app.use("/api/orders", require("./routes/orderRoutes"));
+
 
 
 // Serve static assets if in production

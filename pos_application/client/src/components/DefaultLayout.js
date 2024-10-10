@@ -12,9 +12,11 @@ import {
   UnorderedListOutlined,
   ShoppingCartOutlined,
   QrcodeOutlined,
+  FireOutlined,
 } from "@ant-design/icons";
 import "../styles/DefaultLayout.css";
 import Spinner from "./Spinner";
+import KitchenPage from "../pages/KitchenPage";
 
 const { Header, Sider, Content } = Layout;
 
@@ -58,6 +60,9 @@ const DefaultLayout = ({ children }) => {
           </Menu.Item>
           <Menu.Item key="/qrcode" icon={<QrcodeOutlined />}>
             <Link to="/qrcode">QR-CODE</Link>
+          </Menu.Item>
+          <Menu.Item key="/kitchen" icon={<FireOutlined />}>
+            <Link to="/kitchen">ห้องครัว</Link>
           </Menu.Item>
           <Menu.Item
             key="/logout"

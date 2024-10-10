@@ -9,22 +9,19 @@ import {
   MinusCircleOutlined,
 } from "@ant-design/icons";
 import { Table, Button, Modal, message, Form, Input, Select } from "antd";
-
 const CartPage = () => {
   const [subTotal, setSubTotal] = useState(0);
   const [billPopup, setBillPopup] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { cartItems } = useSelector((state) => state.rootReducer);
-
-  // handle increment
+  //handle increament
   const handleIncreament = (record) => {
     dispatch({
       type: "UPDATE_CART",
       payload: { ...record, quantity: record.quantity + 1 },
     });
   };
-
   const handleDecreament = (record) => {
     if (record.quantity !== 1) {
       dispatch({
@@ -33,51 +30,41 @@ const CartPage = () => {
       });
     }
   };
-
   const columns = [
-    { title: "ชื่อสินค้า", dataIndex: "name", align: "center" },
+    { title: "Name", dataIndex: "name" },
     {
-      title: "ภาพสินค้า",
+      title: "Image",
       dataIndex: "image",
-      align: "center",
       render: (image, record) => (
-        <img
-          src={image}
-          alt={record.name}
-          height="60"
-          width="60"
-          style={{ borderRadius: "8px", objectFit: "cover" }}
-        />
+        <img src={image} alt={record.name} height="60" width="60" />
       ),
     },
-    { title: "ราคา", dataIndex: "price", align: "center" },
+    { title: "Price", dataIndex: "price" },
     {
-      title: "จำนวน",
+      title: "Quantity",
       dataIndex: "_id",
-      align: "center",
       render: (id, record) => (
         <div>
           <PlusCircleOutlined
             className="mx-3"
-            style={{ cursor: "pointer", color: "#4CAF50" }}
+            style={{ cursor: "pointer" }}
             onClick={() => handleIncreament(record)}
           />
           <b>{record.quantity}</b>
           <MinusCircleOutlined
             className="mx-3"
-            style={{ cursor: "pointer", color: "#f44336" }}
+            style={{ cursor: "pointer" }}
             onClick={() => handleDecreament(record)}
           />
         </div>
       ),
     },
     {
-      title: "ลบรายการ",
+      title: "Actions",
       dataIndex: "_id",
-      align: "center",
       render: (id, record) => (
         <DeleteOutlined
-          style={{ cursor: "pointer", color: "#ff4d4f" }}
+          style={{ cursor: "pointer" }}
           onClick={() =>
             dispatch({
               type: "DELETE_FROM_CART",
@@ -91,11 +78,11 @@ const CartPage = () => {
 
   useEffect(() => {
     let temp = 0;
-    cartItems.forEach((item) => (temp += item.price * item.quantity));
+    cartItems.forEach((item) => (temp = temp + item.price * item.quantity));
     setSubTotal(temp);
   }, [cartItems]);
 
-  // handleSubmit
+  //handleSubmit
   const handleSubmit = async (value) => {
     try {
       const newObject = {
@@ -108,105 +95,66 @@ const CartPage = () => {
         ),
         userId: JSON.parse(localStorage.getItem("auth"))._id,
       };
+      // console.log(newObject);
       await axios.post("/api/bills/add-bills", newObject);
-      message.success("ใบเสร็จถูกสร้างแล้ว");
-
-      // Reset cart items
-      dispatch({ type: "RESET_CART" });
-
+      message.success("Bill Generated");
       navigate("/bills");
     } catch (error) {
-      message.error("เกิดข้อผิดพลาด");
+      message.error("Something went wrong");
       console.log(error);
     }
   };
-
   return (
     <DefaultLayout>
-      <h1 style={{ textAlign: "center", marginBottom: "20px", fontSize: "24px" }}>ตระกร้าสินค้า</h1>
-      <Table
-        columns={columns}
-        dataSource={cartItems}
-        bordered
-        pagination={false}
-        style={{ marginBottom: "20px" }}
-      />
+      <h1>Cart Page</h1>
+      <Table columns={columns} dataSource={cartItems} bordered />
       <div className="d-flex flex-column align-items-end">
-        <hr style={{ width: "100%" }} />
-        <h3 style={{ fontSize: "20px" }}>
-          ยอดรวม: <b>{subTotal.toFixed(2)}</b> /-
+        <hr />
+        <h3>
+          SUBT TOTAL : $ <b> {subTotal}</b> /-{" "}
         </h3>
-        <Button
-          type="primary"
-          size="large"
-          onClick={() => setBillPopup(true)}
-          style={{
-            backgroundColor: "#1890ff",
-            borderColor: "#1890ff",
-            borderRadius: "8px",
-            marginTop: "10px",
-          }}
-        >
-          จ่ายเงิน
+        <Button type="primary" onClick={() => setBillPopup(true)}>
+          Create Invoice
         </Button>
       </div>
       <Modal
-        title="ออกใบเสร็จ"
+        title="Create Invoice"
         visible={billPopup}
         onCancel={() => setBillPopup(false)}
-        footer={null}
-        centered
+        footer={false}
       >
         <Form layout="vertical" onFinish={handleSubmit}>
-          <Form.Item
-            name="customerName"
-            label="ชื่อลูกค้า"
-            rules={[{ required: true, message: "กรุณากรอกชื่อลูกค้า" }]}
-          >
+          <Form.Item name="customerName" label="Customer Name">
             <Input />
           </Form.Item>
-          <Form.Item
-            name="customerNumber"
-            label="เบอร์โทรศัพท์"
-            rules={[{ required: true, message: "กรุณากรอกเบอร์โทรศัพท์" }]}
-          >
+          <Form.Item name="customerNumber" label="Contact Number">
             <Input />
           </Form.Item>
 
-          <Form.Item
-            name="paymentMode"
-            label="วิธีการชำระเงิน"
-            rules={[{ required: true, message: "กรุณาเลือกวิธีการชำระเงิน" }]}
-          >
+          <Form.Item name="paymentMode" label="Payment Method">
             <Select>
-              <Select.Option value="cash">เงินสด</Select.Option>
-              <Select.Option value="card">บัตรเครดิต</Select.Option>
-              <Select.Option value="card">ติดไว้ก่อน</Select.Option>
+              <Select.Option value="cash">Cash</Select.Option>
+              <Select.Option value="card">Card</Select.Option>
             </Select>
           </Form.Item>
-          <div className="bill-it" style={{ marginBottom: "20px" }}>
+          <div className="bill-it">
             <h5>
-              ยอดรวม: <b>{subTotal.toFixed(2)}</b>
+              Sub Total : <b>{subTotal}</b>
             </h5>
             <h4>
-              ภาษี: <b>{((subTotal / 100) * 10).toFixed(2)}</b>
+              TAX
+              <b> {((subTotal / 100) * 10).toFixed(2)}</b>
             </h4>
             <h3>
-              ยอดรวมสุทธิ:{" "}
-              <b>{(subTotal + (subTotal / 100) * 10).toFixed(2)}</b>
+              GRAND TOTAL -{" "}
+              <b>
+                {Number(subTotal) + Number(((subTotal / 100) * 10).toFixed(2))}
+              </b>
             </h3>
           </div>
           <div className="d-flex justify-content-end">
-            <Button
-              type="primary"
-              htmlType="submit"
-              style={{
-                backgroundColor: "#4CAF50",
-                borderColor: "#4CAF50",
-                borderRadius: "8px",
-              }}
-            >
-              ออกใบเสร็จ
+            <Button type="primary" htmlType="submit">
+              Generate Bill
             </Button>
           </div>
         </Form>
