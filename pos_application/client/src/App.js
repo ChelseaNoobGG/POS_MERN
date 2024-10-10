@@ -10,6 +10,8 @@ import QRCodePage from "./pages/QRCodePage";
 import OrderPage from "./pages/OrderPage";
 import CartPage from "./pages/CartPage"; // Ensure this path points to your CartPage component
 import KitchenPage from "./pages/KitchenPage";
+import OrderCartPage from "./pages/OrderCartPage";
+
 
 function App() {
   return (
@@ -68,6 +70,9 @@ function App() {
         {/* Route for order page after scanning QR code */}
         <Route path="/order/:tableId" element={<OrderPage />} />
         <Route path="/kitchen" element={<KitchenPage />} />
+        <Route path="/orders/:tableId/cart" element={<OrderCartPage />} />
+        <Route path="/orders/cart/:tableId" element={<OrderCartPage />} />
+
 
         {/* Routes for login and registration */}
         <Route path="/login" element={<Login />} />
