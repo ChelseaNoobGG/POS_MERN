@@ -116,11 +116,11 @@ const OrderCartPage = () => {
       <Title level={3} style={{ textAlign: "center", marginBottom: "20px" }}>
         ตะกร้าสินค้าสำหรับโต๊ะที่ {tableId}
       </Title>
-      <Table columns={columns} dataSource={cartItems} bordered />
+      <Table columns={columns} dataSource={cartItems} bordered rowKey="_id" />
       <div className="d-flex flex-column align-items-end" style={{ marginTop: "20px" }}>
         <hr />
         <h3>
-          ยอดรวมย่อย: <b>{subTotal} บาท</b>
+          ยอดรวมย่อย: <b>{subTotal.toFixed(2)} บาท</b>
         </h3>
         <Button type="primary" onClick={handleSendToKitchen}>
           ส่งออเดอร์ไปที่ครัว
